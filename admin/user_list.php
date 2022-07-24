@@ -18,7 +18,7 @@ if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Blog Listings</h3>
+                <h3 class="card-title">User Listings</h3>
               </div>
               <!-- /.card-header -->
               <?php
@@ -28,28 +28,28 @@ if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
                    $pageno = 1;
                  }
 
-                 $numOfrecord = 2;
+                 $numOfrecord = 5;
                  $offset = ($pageno - 1) * $numOfrecord;
 
                  if(empty($_POST['search'])){
-                   $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
+                   $stmt = $pdo->prepare("SELECT * FROM users ORDER BY id DESC");
                    $stmt->execute();
                    $rawresult = $stmt->fetchAll();
 
                    $total_pages = ceil(count($rawresult) / $numOfrecord);
 
-                   $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT $offset, $numOfrecord");
+                   $stmt = $pdo->prepare("SELECT * FROM users ORDER BY id DESC LIMIT $offset, $numOfrecord");
                    $stmt->execute();
                    $result = $stmt->fetchAll();
                  } else {
                    $seacrch_key = $_POST['search'];
-                   $stmt = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$seacrch_key%' ORDER BY id DESC");
+                   $stmt = $pdo->prepare("SELECT * FROM users WHERE name LIKE '%$seacrch_key%' ORDER BY id DESC");
                    $stmt->execute();
                    $rawresult = $stmt->fetchAll();
 
                    $total_pages = ceil(count($rawresult) / $numOfrecord);
 
-                   $stmt = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$seacrch_key%' ORDER BY id DESC LIMIT $offset, $numOfrecord");
+                   $stmt = $pdo->prepare("SELECT * FROM users WHERE name LIKE '%$seacrch_key%' ORDER BY id DESC LIMIT $offset, $numOfrecord");
                    $stmt->execute();
                    $result = $stmt->fetchAll();
                  }
@@ -57,14 +57,15 @@ if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
 
               <div class="card-body">
 
-                <a href="add.php" type="button" class="btn btn-success mb-3">New Blog Post</a>
+                <a href="user_add.php" type="button" class="btn btn-success mb-3">Create New User</a>
 
                 <table class="table table-bordered mb-4">
                   <thead>
                     <tr>
                       <th style="width: 10px">#</th>
-                      <th>Title</th>
-                      <th>Content</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
                       <th style="width: 40px">Actions</th>
                     </tr>
                   </thead>
@@ -75,16 +76,17 @@ if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
                          foreach ($result as $value) { ?>
                            <tr>
                              <td><?php echo $i ?></td>
-                             <td><?php echo $value['title'] ?></td>
-                             <td><?php echo substr($value['content'], 0,50)." . . ." ?></td>
+                             <td><?php echo $value['name'] ?></td>
+                             <td><?php echo $value['email'] ?></td>
+                             <td><?php echo $value['role'] == 0 ? "user" : "admin"; ?></td>
                              <td>
                                <div class="btn-group">
                                  <div class="container">
-                                   <a href="edit.php?id=<?php echo $value['id']?>"
+                                   <a href="user_edit.php?id=<?php echo $value['id']?>"
                                      type="button" class="btn btn-warning btn-sm">Edit</a>
                                  </div>
                                  <div class="container">
-                                   <a href="delete.php?id=<?php echo $value['id']?>"
+                                   <a href="user_delete.php?id=<?php echo $value['id']?>"
                                      type="button" class="btn btn-danger btn-sm"
                                      onclick="return confirm('Are you sure you want to delete?')">Delete</a>
                                  </div>

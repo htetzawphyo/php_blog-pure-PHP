@@ -52,7 +52,7 @@ if(isset($_POST['update_button'])){
  ?>
 
 
-<?php include 'header.html'; ?>
+<?php include 'header.php'; ?>
 
     <!-- Main content -->
     <div class="content">

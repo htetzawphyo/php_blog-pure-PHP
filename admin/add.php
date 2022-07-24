@@ -36,7 +36,7 @@ if(isset($_POST['create_button'])){
  ?>
 
 
-<?php include 'header.html'; ?>
+<?php include 'header.php'; ?>
 
     <!-- Main content -->
     <div class="content">
