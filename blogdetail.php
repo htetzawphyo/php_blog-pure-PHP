@@ -5,6 +5,9 @@
    if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
      header('location: login.php');
    }
+   if($_SESSION['role'] != 0){
+     header('location: login.php');
+   }
 
    $statement = $pdo->prepare("SELECT * FROM posts WHERE id=".$_GET['id']);
    $statement->execute();
@@ -114,9 +117,9 @@
     </div>
     </section>
 
-    <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
+    <!-- <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
       <i class="fas fa-chevron-up"></i>
-    </a>
+    </a> -->
   </div>
   <!-- /.content-wrapper -->
 
@@ -124,7 +127,7 @@
     <div class="float-right d-none d-sm-block">
         <a href="index.php" class="btn btn-primary"><< Back</a>
     </div>
-    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+    <strong>Copyright &copy; 2022 <a href="">Htet Zaw Phyo</a>.</strong>
   </footer>
 
   <!-- Control Sidebar -->

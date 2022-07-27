@@ -2,8 +2,11 @@
 session_start();
 require "../config/config.php";
 
-if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
-  header('location: login.php');
+if(empty($_SESSION['id']) and empty($_SESSION['logged_in']) and $_SESSION['role'] == 0){
+  header('location: ../login.php');
+}
+if($_SESSION['role'] != 1){
+  header('location: ../login.php');
 }
 
   if(isset($_POST['update_button'])){

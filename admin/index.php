@@ -3,7 +3,18 @@ session_start();
 require "../config/config.php";
 
 if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
-  header('location: login.php');
+  header('location: ../login.php');
+}
+if($_SESSION['role'] != 1){
+  header('location: ../login.php');
+}
+// FOR SEARCH WITH COOKIE
+if(!empty($_POST['search'])){
+  setcookie('search', $_POST['search'],time() + (86400 * 30), "/");
+}
+if(empty($_POST['search']) and empty($_GET['pageno'])){
+  unset($_COOKIE['search']);
+  setcookie('search', null, -1, '/');
 }
 
  ?>
@@ -28,10 +39,10 @@ if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
                    $pageno = 1;
                  }
 
-                 $numOfrecord = 2;
+                 $numOfrecord = 5;
                  $offset = ($pageno - 1) * $numOfrecord;
 
-                 if(empty($_POST['search'])){
+                 if(empty($_POST['search']) and empty($_COOKIE['search'])){
                    $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
                    $stmt->execute();
                    $rawresult = $stmt->fetchAll();
@@ -41,7 +52,18 @@ if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
                    $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT $offset, $numOfrecord");
                    $stmt->execute();
                    $result = $stmt->fetchAll();
-                 } else {
+                 } elseif(empty($_POST['search'])) {
+                   $seacrch_key =  $_COOKIE['search'];
+                   $stmt = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$seacrch_key%' ORDER BY id DESC");
+                   $stmt->execute();
+                   $rawresult = $stmt->fetchAll();
+
+                   $total_pages = ceil(count($rawresult) / $numOfrecord);
+
+                   $stmt = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$seacrch_key%' ORDER BY id DESC LIMIT $offset, $numOfrecord");
+                   $stmt->execute();
+                   $result = $stmt->fetchAll();
+                 }else {
                    $seacrch_key = $_POST['search'];
                    $stmt = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$seacrch_key%' ORDER BY id DESC");
                    $stmt->execute();

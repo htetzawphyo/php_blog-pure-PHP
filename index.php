@@ -5,6 +5,9 @@
    if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
      header('location: login.php');
    }
+   if($_SESSION['role'] != 0){
+     header('location: login.php');
+   }
 
 ?>
 
@@ -111,7 +114,7 @@
     <div class="float-right d-none d-sm-block">
       <a href="logout.php" class="btn btn-danger" onclick="return confirm('Are you sure you want to logout?')">Logout</a>
     </div>
-    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+    <strong>Copyright &copy; 2022 <a href="">Htet Zaw Phyo</a>.</strong>
   </footer>
 
 

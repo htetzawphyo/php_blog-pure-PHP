@@ -13,9 +13,10 @@ if(isset($_POST['signIn_button'])){
   $user = $pdostatement->fetch(PDO::FETCH_ASSOC);
 
   if($user){
-    if($user['password'] == $password){
+    if($user['password'] == $password and $user['role'] == 1){
       $_SESSION['id'] = $user['id'];
       $_SESSION['username'] = $user['name'];
+      $_SESSION['role'] = 1;
       $_SESSION['logged_in'] = time();
 
       header('location: index.php');
