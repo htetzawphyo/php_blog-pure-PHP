@@ -9,36 +9,61 @@ if($_SESSION['role'] != 1){
   header('location: ../login.php');
 }
 
+  // UPDATE user
+  $nameError = "";
+  $emailError = "";
+  $passwordShortError = "";
+
   if(isset($_POST['update_button'])){
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    if(empty($_POST['role'])){
-      $role = 0;
-    }else {
-      $role = 1;
-    }
-
-    $pdostatement = $pdo->prepare("SELECT * FROM users WHERE email=:email AND id!=:id");
-    $pdostatement->execute([
-      ':email' => $email,
-      ':id' => $id
-    ]);
-    $user = $pdostatement->fetch();
-
-    if($user){
-      echo "<script>alert('Already have email!');window.location.href='user_add.php'</script>";
+    if(empty($_POST['name']) || empty($_POST['email'])){
+      if(empty($_POST['name'])){
+        $nameError = "The name field is required!";
+      }
+      if(empty($_POST['email'])){
+        $emailError = "The email field is required!";
+      }
+    } elseif (!empty($_POST['password']) && strlen($_POST['password']) < 4) {
+      $passwordShortError = "At least 4 character password!";
     } else {
-      $statement = $pdo->prepare("UPDATE users SET name=:name, email=:email, password=:password, role=:role WHERE id='$id'");
-      $result = $statement->execute([
-        ':name' => $name,
+      $id = $_POST['id'];
+      $name = $_POST['name'];
+      $email = $_POST['email'];
+      $password = $_POST['password'];
+      if(empty($_POST['role'])){
+        $role = 0;
+      }else {
+        $role = 1;
+      }
+
+      $pdostatement = $pdo->prepare("SELECT * FROM users WHERE email=:email AND id!=:id");
+      $pdostatement->execute([
         ':email' => $email,
-        ':password' => $password,
-        ':role' => $role
+        ':id' => $id
       ]);
-      if($result){
-        echo "<script>alert('Successfully Updated.');window.location.href='user_list.php';</script>";
+      $user = $pdostatement->fetch();
+
+      if($user){
+        echo "<script>alert('Already have email!');window.location.href='user_add.php'</script>";
+      } else {
+        if(empty($password)){
+          $statement = $pdo->prepare("UPDATE users SET name=:name, email=:email, role=:role WHERE id='$id'");
+          $result = $statement->execute([
+            ':name' => $name,
+            ':email' => $email,
+            ':role' => $role
+          ]);
+        }else {
+          $statement = $pdo->prepare("UPDATE users SET name=:name, email=:email, password=:password, role=:role WHERE id='$id'");
+          $result = $statement->execute([
+            ':name' => $name,
+            ':email' => $email,
+            ':password' => $password,
+            ':role' => $role
+          ]);
+        }
+        if($result){
+          echo "<script>alert('Successfully Updated.');window.location.href='user_list.php';</script>";
+        }
       }
     }
   }
@@ -76,15 +101,25 @@ if($_SESSION['role'] != 1){
               <div class="card-body">
                 <form class="" action="" method="post">
                   <input type="hidden" name="id" value="<?php echo $user['id'] ?>">
-                  <label>Name</label>
-                  <input type="text" name="name" class="form-control mb-3"
-                         value="<?php echo $user['name'] ?>" required>
-                  <label>Email</label>
-                  <input type="email" name="email" class="form-control mb-3"
-                         value="<?php echo $user['email'] ?>" required>
-                  <label>Password</label>
-                  <input type="password" name="password" class="form-control mb-3"
-                         value="<?php echo $user['password'] ?>" required>
+                  <div class="mb-3">
+                    <label>Name</label>
+                    <input type="text" name="name" class="form-control"
+                           value="<?php echo $nameError? "" : $user['name']; ?>" >
+                    <i class="text-danger"><?php echo $nameError ?></i>
+                  </div>
+                  <div class="mb-3">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control"
+                           value="<?php echo $emailError? "" : $user['email']; ?>" >
+                    <i class="text-danger"><?php echo $emailError ?></i>
+                  </div>
+                  <div class="mb-3">
+                    <label>Password</label>
+                    <strong class="d-block text-sm text-muted">The user password is already has.</strong>
+                    <input type="password" name="password" class="form-control mb-3"
+                           value="" >
+                    <i class="text-danger"><?php echo $passwordShortError ?></i>
+                  </div>
                   <label>Role</label>
                   <div class="input-group">
                     <h6 class="text-bold">Admin: &nbsp;&nbsp;</h6>

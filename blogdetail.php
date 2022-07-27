@@ -15,17 +15,23 @@
 
    // PUT COMMENT
      $blogId = $_GET['id'];
-     if($_POST){
-       $comment = $_POST['comment'];
+     $cmtError = "";
 
-       $stament = $pdo->prepare("INSERT INTO comments (content, author_id, post_id)
-                                 VALUES (:content, :author_id, :post_id)");
-       $result = $stament->execute([
-         ':content' => $comment,
-         ':author_id' => $_SESSION['id'],
-         ':post_id' => $blogId
-       ]);
-       header('location: blogdetail.php?id='.$blogId);
+     if($_POST){
+       if(empty($_POST['comment'])){
+         $cmtError = "Comment field is required!";
+       } else {
+         $comment = $_POST['comment'];
+
+         $stament = $pdo->prepare("INSERT INTO comments (content, author_id, post_id)
+                                   VALUES (:content, :author_id, :post_id)");
+         $result = $stament->execute([
+           ':content' => $comment,
+           ':author_id' => $_SESSION['id'],
+           ':post_id' => $blogId
+         ]);
+         header('location: blogdetail.php?id='.$blogId);
+       }
      }
 
      //SHOW COMMENT
@@ -106,7 +112,8 @@
           <!-- /.card-footer -->
           <div class="card-footer">
             <form action="" method="post">
-                <input name="comment" type="text" class="form-control form-control-sm" placeholder="Press enter to post comment">
+                <input name="comment" type="text" class="form-control form-control-sm <?php if(!empty($cmtError)) { echo 'is-invalid'; }?>" placeholder="Press enter to post comment">
+                <i class="text-danger"><?php echo $cmtError ?></i>
             </form>
           </div>
           <!-- /.card-footer -->

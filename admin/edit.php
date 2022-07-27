@@ -12,39 +12,51 @@ $statement->execute();
 $result = $statement->fetch();
 
 // Update FORM
+$titleError = "";
+$contentError = "";
+
 if(isset($_POST['update_button'])){
-  $id = $_POST['id'];
-  $title = $_POST['title'];
-  $content = $_POST['content'];
+  if(empty($_POST['title']) || empty($_POST['content'])){
+    if(empty($_POST['title'])){
+      $titleError = "The title field is required!";
+    }
+    if(empty($_POST['content'])){
+      $contentError = "The content field is required!";
+    }
+  } else {
+    $id = $_POST['id'];
+    $title = $_POST['title'];
+    $content = $_POST['content'];
 
-  if(!empty($_FILES['image']['name'])){
-    $file = 'images/'.($_FILES['image']['name']);
-    $imageType = pathinfo($file, PATHINFO_EXTENSION);
+    if(!empty($_FILES['image']['name'])){
+      $file = 'images/'.($_FILES['image']['name']);
+      $imageType = pathinfo($file, PATHINFO_EXTENSION);
 
-    if($imageType == 'png' or $imageType == 'jpg' or $imageType == 'jpeg') {
-      $image = $_FILES['image']['name'];
-      move_uploaded_file($_FILES['image']['tmp_name'], $file);
+      if($imageType == 'png' or $imageType == 'jpg' or $imageType == 'jpeg') {
+        $image = $_FILES['image']['name'];
+        move_uploaded_file($_FILES['image']['tmp_name'], $file);
 
-      $statement = $pdo->prepare("UPDATE posts SET title=:title, content=:content, image=:image
+        $statement = $pdo->prepare("UPDATE posts SET title=:title, content=:content, image=:image
+                                    WHERE id='$id'");
+        $result = $statement->execute([
+          ':title' => $title,
+          ':content' => $content,
+          ':image' => $image
+        ]);
+        if($result){
+          echo "<script>alert('Successfully updated.');window.location.href='index.php';</script>";
+        }
+      }
+    } else {
+      $statement = $pdo->prepare("UPDATE posts SET title=:title, content=:content
                                   WHERE id='$id'");
       $result = $statement->execute([
         ':title' => $title,
-        ':content' => $content,
-        ':image' => $image
+        ':content' => $content
       ]);
       if($result){
         echo "<script>alert('Successfully updated.');window.location.href='index.php';</script>";
       }
-    }
-  } else {
-    $statement = $pdo->prepare("UPDATE posts SET title=:title, content=:content
-                                WHERE id='$id'");
-    $result = $statement->execute([
-      ':title' => $title,
-      ':content' => $content
-    ]);
-    if($result){
-      echo "<script>alert('Successfully updated.');window.location.href='index.php';</script>";
     }
   }
 }
@@ -71,12 +83,17 @@ if(isset($_POST['update_button'])){
 
                   <div class="mb-3">
                     <label>Title</label>
-                    <input type="text" name="title" class="form-control"
-                     value="<?php echo $result['title'] ?>" required>
+                    <input type="text" name="title"
+                    class="form-control <?php if(!empty($titleError)) { echo 'is-invalid'; }?>"
+                     value="<?php echo $titleError? "" : $result['title']; ?>">
+                     <i class="text-danger"><?php echo $titleError ?></i>
                   </div>
                   <div class="mb-3">
                     <label>Content</label>
-                    <textarea name="content" class="form-control" rows="8" cols="80" required><?php echo $result['content'] ?></textarea>
+                    <textarea name="content"
+                    class="form-control <?php if(!empty($contentError)) { echo 'is-invalid'; }?>"
+                    rows="8" cols="80"><?php echo $contentError? "" : $result['content']; ?></textarea>
+                    <i class="text-danger"><?php echo $contentError ?></i>
                   </div>
                   <div class="mb-3">
                     <label>Image</label> <br>

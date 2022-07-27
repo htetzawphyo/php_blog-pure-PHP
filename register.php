@@ -2,31 +2,52 @@
 session_start();
 require "config/config.php";
 
+// user REGISTER
+$nameError = "";
+$emailError = "";
+$passwordError = "";
+$passwordShortError = "";
+
 if(isset($_POST['register_button'])){
-  $name = $_POST['name'];
-  $email = $_POST['email'];
-  $password = $_POST['password'];
-
-  $pdostatement = $pdo->prepare("SELECT * FROM users WHERE email=:email");
-
-  $pdostatement->bindValue(':email',$email);
-  $pdostatement->execute();
-  $user = $pdostatement->fetch(PDO::FETCH_ASSOC);
-
-  if($user){
-    echo "<script>alert('Already have email!');window.location.href='register.php'</script>";
+  if(empty($_POST['name']) || empty($_POST['email']) || empty($_POST['password']) || strlen($_POST['password']) < 4){
+    if(empty($_POST['name'])){
+      $nameError = "The name field is required!";
+    }
+    if(empty($_POST['email'])){
+      $emailError = "The email field is required!";
+    }
+    if(empty($_POST['password'])){
+      $passwordError = "The password field is required!";
+    }
+    if(strlen($_POST['password']) < 4){
+      $passwordShortError = "At least 4 character password!";
+    }
   } else {
-    $stament = $pdo->prepare("INSERT INTO users (name, email, password)
-                              VALUES (:name, :email, :password)");
-    $result = $stament->execute([
-      ':name' => $name,
-      ':email' => $email,
-      ':password' => $password
-    ]);
-    if($result){
-      echo "<script>alert('Successfully registered.');window.location.href='login.php';</script>";
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $pdostatement = $pdo->prepare("SELECT * FROM users WHERE email=:email");
+
+    $pdostatement->bindValue(':email',$email);
+    $pdostatement->execute();
+    $user = $pdostatement->fetch(PDO::FETCH_ASSOC);
+
+    if($user){
+      echo "<script>alert('Already have email!');window.location.href='register.php'</script>";
+    } else {
+      $stament = $pdo->prepare("INSERT INTO users (name, email, password)
+                                VALUES (:name, :email, :password)");
+      $result = $stament->execute([
+        ':name' => $name,
+        ':email' => $email,
+        ':password' => $password
+      ]);
+      if($result){
+        echo "<script>alert('Successfully registered.');window.location.href='login.php';</script>";
+    }
+   }
   }
-}
 }
 
  ?>
@@ -59,30 +80,45 @@ if(isset($_POST['register_button'])){
       <p class="login-box-msg">Register your account</p>
 
       <form action="" method="post">
-        <div class="input-group mb-3">
-          <input type="text" name="name" class="form-control" placeholder="Name" required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-user"></span>
+        <div class="mb-3">
+          <div class="input-group">
+            <input type="text" name="name" class="form-control <?php if(!empty($nameError)) { echo 'is-invalid'; }?>"
+                   placeholder="Name">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
             </div>
           </div>
+          <i class="text-danger"><?php echo $nameError ?></i>
         </div>
-        <div class="input-group mb-3">
-          <input type="email" name="email" class="form-control" placeholder="Email" required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
+
+        <div class="mb-3">
+          <div class="input-group">
+            <input type="email" name="email" class="form-control <?php if(!empty($emailError)) { echo 'is-invalid'; }?>"
+                   placeholder="Email">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
             </div>
           </div>
+          <i class="text-danger"><?php echo $emailError ?></i>
         </div>
-        <div class="input-group mb-3">
-          <input type="password" name="password" class="form-control" placeholder="Password" required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
+
+        <div class="mb-3">
+          <div class="input-group">
+            <input type="password" name="password" class="form-control <?php if(!empty($passwordError) || !empty($passwordShortError)) { echo 'is-invalid'; }?>" 
+                   placeholder="Password">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
             </div>
           </div>
+          <i class="text-danger"><?php echo $passwordError? $passwordError : $passwordShortError; ?></i>
         </div>
+
         <div class="row">
 
           <!-- /.col -->
