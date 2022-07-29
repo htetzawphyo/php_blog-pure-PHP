@@ -53,11 +53,12 @@ if($_SESSION['role'] != 1){
             ':role' => $role
           ]);
         }else {
+          $passwordHash = password_hash($password, PASSWORD_DEFAULT);
           $statement = $pdo->prepare("UPDATE users SET name=:name, email=:email, password=:password, role=:role WHERE id='$id'");
           $result = $statement->execute([
             ':name' => $name,
             ':email' => $email,
-            ':password' => $password,
+            ':password' => $passwordHash,
             ':role' => $role
           ]);
         }

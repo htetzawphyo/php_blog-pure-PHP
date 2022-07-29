@@ -13,7 +13,7 @@ if(isset($_POST['signIn_button'])){
   $user = $pdostatement->fetch(PDO::FETCH_ASSOC);
 
   if($user){
-    if($user['password'] == $password and $user['role'] == 0){
+    if(password_verify($password,$user['password']) and $user['role'] == 0){
       $_SESSION['id'] = $user['id'];
       $_SESSION['username'] = $user['name'];
       $_SESSION['role'] = 0;
