@@ -1,6 +1,7 @@
 <?php
 session_start();
 require "config/config.php";
+require "config/common.php";
 
 // user REGISTER
 $nameError = "";
@@ -80,6 +81,8 @@ if(isset($_POST['register_button'])){
       <p class="login-box-msg">Register your account</p>
 
       <form action="" method="post">
+      <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
+
         <div class="mb-3">
           <div class="input-group">
             <input type="text" name="name" class="form-control <?php if(!empty($nameError)) { echo 'is-invalid'; }?>"

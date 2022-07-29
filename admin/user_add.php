@@ -1,6 +1,7 @@
 <?php
 session_start();
 require "../config/config.php";
+require "../config/common.php";
 
 if(empty($_SESSION['id']) and empty($_SESSION['logged_in']) and $_SESSION['role'] == 0){
   header('location: ../login.php');
@@ -87,6 +88,8 @@ if($_SESSION['role'] != 1){
 
               <div class="card-body">
                 <form class="" action="" method="post">
+                <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
+
                   <div class="mb-3">
                     <label>Name</label>
                     <input type="text" name="name"

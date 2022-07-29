@@ -1,6 +1,7 @@
 <?php
    session_start();
    require "config/config.php";
+   require "config/common.php";
 
    if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
      header('location: login.php');
@@ -112,6 +113,8 @@
           <!-- /.card-footer -->
           <div class="card-footer">
             <form action="" method="post">
+            <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
+
                 <input name="comment" type="text" class="form-control form-control-sm <?php if(!empty($cmtError)) { echo 'is-invalid'; }?>" placeholder="Press enter to post comment">
                 <i class="text-danger"><?php echo $cmtError ?></i>
             </form>

@@ -1,6 +1,7 @@
 <?php
 session_start();
 require "../config/config.php";
+require "../config/common.php";
 
 if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
   header('location: login.php');
@@ -78,6 +79,7 @@ if(isset($_POST['update_button'])){
 
               <div class="card-body">
                 <form class="" action="" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
 
                   <input type="hidden" name="id" value="<?php echo $result['id'] ?>">
 

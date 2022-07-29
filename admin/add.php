@@ -1,6 +1,7 @@
 <?php
 session_start();
 require "../config/config.php";
+require "../config/common.php";
 
 if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
   header('location: login.php');
@@ -67,6 +68,8 @@ if(isset($_POST['create_button'])){
 
               <div class="card-body">
                 <form class="" action="" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
+
                   <div class="mb-3">
                     <label>Title</label>
                     <input type="text" name="title"
