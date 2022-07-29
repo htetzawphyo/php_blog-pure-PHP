@@ -87,14 +87,14 @@ if(isset($_POST['update_button'])){
                     <label>Title</label>
                     <input type="text" name="title"
                     class="form-control <?php if(!empty($titleError)) { echo 'is-invalid'; }?>"
-                     value="<?php echo $titleError? "" : $result['title']; ?>">
+                     value="<?php echo $titleError? "" : escape($result['title']); ?>">
                      <i class="text-danger"><?php echo $titleError ?></i>
                   </div>
                   <div class="mb-3">
                     <label>Content</label>
                     <textarea name="content"
                     class="form-control <?php if(!empty($contentError)) { echo 'is-invalid'; }?>"
-                    rows="8" cols="80"><?php echo $contentError? "" : $result['content']; ?></textarea>
+                    rows="8" cols="80"><?php echo $contentError? "" : escape($result['content']); ?></textarea>
                     <i class="text-danger"><?php echo $contentError ?></i>
                   </div>
                   <div class="mb-3">

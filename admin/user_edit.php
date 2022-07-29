@@ -108,13 +108,13 @@ if($_SESSION['role'] != 1){
                   <div class="mb-3">
                     <label>Name</label>
                     <input type="text" name="name" class="form-control"
-                           value="<?php echo $nameError? "" : $user['name']; ?>" >
+                           value="<?php echo $nameError? "" : escape($user['name']); ?>" >
                     <i class="text-danger"><?php echo $nameError ?></i>
                   </div>
                   <div class="mb-3">
                     <label>Email</label>
                     <input type="email" name="email" class="form-control"
-                           value="<?php echo $emailError? "" : $user['email']; ?>" >
+                           value="<?php echo $emailError? "" : escape($user['email']); ?>" >
                     <i class="text-danger"><?php echo $emailError ?></i>
                   </div>
                   <div class="mb-3">

@@ -1,6 +1,7 @@
 <?php
    session_start();
    require "config/config.php";
+   require "config/common.php";
 
    if(empty($_SESSION['id']) and empty($_SESSION['logged_in'])){
      header('location: login.php');
@@ -68,7 +69,7 @@
                <!-- Box Comment -->
                <div class="card card-widget">
                  <div class="card-header">
-                   <h4 class="text-center"><?php echo $value['title'] ?></h4>
+                   <h4 class="text-center"><?php echo escape($value['title']); ?></h4>
                  </div>
                  <!-- /.card-header -->
                  <a href="blogdetail.php?id=<?php echo $value['id'] ?>">

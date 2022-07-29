@@ -78,7 +78,7 @@
     <section class="content-header">
       <div class="container-fluid">
 
-        <h2 class="text-center"><?php echo $result['title'] ?></h2>
+        <h2 class="text-center"><?php echo escape($result['title']); ?></h2>
       </div><!-- /.container-fluid -->
     </section>
     <section class="content">
@@ -90,7 +90,7 @@
           <div class="card-body">
             <img class="img-fluid pad w-100 mb-4" src="admin/images/<?php echo $result['image'] ?>" alt="Photo">
 
-            <p class="mb-3"><?php echo $result['content'] ?></p>
+            <p class="mb-3"><?php echo escape($result['content']) ?></p>
             <h3>Comment</h3>
             <hr>
           </div>
@@ -101,10 +101,10 @@
                 <div class="card-comment">
                   <div class="comment-text ml-0">
                     <span class="username">
-                      <?php echo $resultaut[$key][0]['name']; ?>
-                      <span class="text-muted float-right"><?php echo $value['created_at'] ?></span>
+                      <?php echo escape($resultaut[$key][0]['name']); ?>
+                      <span class="text-muted float-right"><?php echo escape($value['created_at']); ?></span>
                     </span>
-                <?php echo $value['content'] ?>
+                <?php echo escape($value['content']); ?>
                   </div>
                 </div>
           <?php } ?>

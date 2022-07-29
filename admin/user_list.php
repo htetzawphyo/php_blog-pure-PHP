@@ -1,6 +1,7 @@
 <?php
 session_start();
 require "../config/config.php";
+require "../config/common.php";
 
 if(empty($_SESSION['id']) and empty($_SESSION['logged_in']) and $_SESSION['role'] == 0){
   header('location: ../login.php');
@@ -98,8 +99,8 @@ if(empty($_POST['search']) and empty($_GET['pageno'])){
                          foreach ($result as $value) { ?>
                            <tr>
                              <td><?php echo $i ?></td>
-                             <td><?php echo $value['name'] ?></td>
-                             <td><?php echo $value['email'] ?></td>
+                             <td><?php echo escape($value['name']); ?></td>
+                             <td><?php echo escape($value['email']); ?></td>
                              <td><?php echo $value['role'] == 0 ? "user" : "admin"; ?></td>
                              <td>
                                <div class="btn-group">
