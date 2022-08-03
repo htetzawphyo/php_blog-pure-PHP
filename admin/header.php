@@ -1,3 +1,9 @@
+<?php
+if(session_status() == PHP_SESSION_NONE){
+  session_start();
+  require "../config/common.php";
+}
+?>
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
